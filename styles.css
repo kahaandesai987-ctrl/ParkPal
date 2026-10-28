@@ -1,0 +1,9 @@
+/* Custom Overrides for Leaflet & UI Elements */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.leaflet-popup-content-wrapper { border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; }
+.leaflet-popup-content { margin: 14px; }
+.leaflet-popup-tip-container { margin-top: -1px; }
+.custom-icon { background: transparent; border: none; }
