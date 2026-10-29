@@ -9,77 +9,140 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans h-screen flex flex-col overflow-hidden">
-    <!-- Premium App Header -->
-    <header class="bg-gradient-to-r from-slate-900 to-emerald-900 text-white p-3 shadow-lg flex justify-between items-center z-20 relative">
-        <div class="flex items-center space-x-3">
-            <div class="h-10 w-10 bg-slate-800 rounded-full p-0.5 flex items-center justify-center shadow-md overflow-hidden border border-slate-600">
-                <img src="logo.png" alt="ParkPal Logo" class="h-full w-full object-cover rounded-full" onerror="this.src='https://via.placeholder.com/40/0f172a/ffffff?text=PP'">
+    
+    <!-- SPLASH SCREEN / INTRO ANIMATION OVERLAY -->
+    <div id="splash-screen" class="fixed inset-0 bg-slate-950 z-[4000] flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="relative flex flex-col items-center animate-bounce-gentle">
+            <!-- Glowing background aura -->
+            <div class="absolute -inset-4 bg-emerald-500/20 rounded-full blur-2xl animate-pulse"></div>
+            <!-- Magnified Animated Logo Badge -->
+            <div class="relative h-36 w-36 bg-slate-900 rounded-3xl flex items-center justify-center shadow-2xl overflow-hidden border-2 border-emerald-400/80 mb-6 transform scale-110 animate-scale-up">
+                <img src="logo.png" alt="ParkPal Logo" class="h-full w-full object-cover scale-[1.75]" onerror="this.src='https://via.placeholder.com/144/0f172a/10b981?text=PP'">
             </div>
-            <div>
-                <h1 class="text-2xl font-bold tracking-wider text-emerald-50">PARK PAL</h1>
-                <p class="text-[10px] text-emerald-300 uppercase tracking-widest -mt-1">Smart Parking Assistant</p>
+            <h1 class="text-3xl md:text-4xl font-black tracking-widest text-white mb-2 animate-fade-in-delayed">PARK PAL</h1>
+            <p class="text-xs md:text-sm text-emerald-400 uppercase tracking-widest font-semibold animate-fade-in-delayed-more">Smart Parking Assistant</p>
+            <div class="mt-8 flex items-center space-x-2">
+                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+                <span class="text-[11px] text-slate-400 font-mono tracking-wider">LOADING ZONE TELEMETRY...</span>
             </div>
         </div>
-        <div class="hidden md:flex items-center space-x-4">
-            <span class="text-xs bg-white/10 px-3 py-1.5 rounded-full border border-white/20 shadow-sm font-medium">📍 Mumbai West Zone</span>
-            <button class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm px-4 py-1.5 rounded-full transition shadow-md font-semibold">Profile</button>
+    </div>
+
+    <!-- Premium App Header with Magnified Logo -->
+    <header class="bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950 text-white px-4 py-3 shadow-xl flex justify-between items-center z-20 relative border-b border-emerald-700/40">
+        <div class="flex items-center space-x-4">
+            <div class="h-20 w-20 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden border-2 border-emerald-400/60 shrink-0">
+                <img src="logo.png" alt="ParkPal Logo" class="h-full w-full object-cover scale-[1.65] transform hover:scale-[1.8] transition duration-300" onerror="this.src='https://via.placeholder.com/80/0f172a/10b981?text=PP'">
+            </div>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black tracking-wider text-emerald-50 flex items-center gap-2.5">
+                    PARK PAL
+                </h1>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <span class="hidden lg:inline-flex items-center text-xs bg-white/10 px-3.5 py-2 rounded-full border border-white/15 shadow-sm font-medium">
+                📍 Mumbai West Zone
+            </span>
+
+            <!-- Smart Wallet Button -->
+            <button onclick="openWalletModal()" class="flex items-center space-x-2.5 bg-slate-800/90 hover:bg-slate-700 text-white px-4 py-2 rounded-full border border-emerald-500/40 transition shadow-md group">
+                <div class="w-7 h-7 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                </div>
+                <div class="text-left">
+                    <span class="block text-[9px] text-slate-400 uppercase tracking-wider leading-none">ParkPal Pay</span>
+                    <span id="header-wallet-balance" class="text-sm font-extrabold text-emerald-400">₹250</span>
+                </div>
+                <span class="text-xs bg-emerald-600 px-1.5 py-0.5 rounded text-white font-bold ml-1">+</span>
+            </button>
+
+            <!-- User Profile / Login Button -->
+            <button id="profile-btn" onclick="openLoginModal()" class="flex items-center space-x-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2.5 rounded-full transition shadow-md font-bold">
+                <div id="user-avatar" class="w-6 h-6 rounded-full bg-white text-emerald-800 flex items-center justify-center font-black text-xs">
+                    DS
+                </div>
+                <span id="header-username" class="hidden sm:inline">Dheer Sheth</span>
+                <svg class="w-3.5 h-3.5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
         </div>
     </header>
 
+    <!-- Active Hold Notification Banner (Hidden by default) -->
+    <div id="active-hold-banner" class="hidden bg-emerald-900 text-white px-4 py-2 text-xs flex justify-between items-center shadow-md z-10 border-b border-emerald-700">
+        <div class="flex items-center space-x-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span><strong>ACTIVE HOLD:</strong> <span id="banner-lot-name">Lot Name</span> | Leave home by <strong id="banner-leave-time" class="text-emerald-300">08:45 AM</strong></span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <span class="bg-slate-900/60 px-2.5 py-1 rounded font-mono text-emerald-300 font-bold" id="banner-countdown">14:59</span>
+            <button onclick="cancelActiveHold()" class="text-red-300 hover:text-red-200 underline font-semibold">Release Hold</button>
+        </div>
+    </div>
+
     <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         <!-- Sidebar Controls -->
-        <aside class="w-full md:w-[400px] bg-white shadow-2xl z-10 flex flex-col overflow-y-auto border-r border-slate-200">
-            <div class="p-5 bg-gradient-to-b from-slate-50 to-white">
-                <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    Find Your Spot
-                </h2>
+        <aside class="w-full md:w-[410px] bg-white shadow-2xl z-10 flex flex-col overflow-y-auto border-r border-slate-200">
+            <div class="p-4 bg-gradient-to-b from-slate-50 to-white border-b border-slate-200">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-base font-bold text-slate-800 flex items-center">
+                        <svg class="w-4 h-4 mr-1.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        Plan Your Commute
+                    </h2>
+                    <span id="user-permit-badge" class="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-semibold">Visitor Account</span>
+                </div>
                 
-                <div class="space-y-4">
+                <div class="space-y-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Destination</label>
-                        <select id="destination" class="w-full p-2.5 border-2 border-slate-300 rounded-lg bg-white text-slate-800 font-bold focus:outline-none focus:border-emerald-500 transition shadow-sm">
-                            <option value="mpstme">MPSTME, Vile Parle West</option>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Destination</label>
+                        <select id="destination" class="w-full p-2 border-2 border-slate-200 rounded-lg bg-white text-slate-800 font-bold text-sm focus:outline-none focus:border-emerald-500 transition shadow-sm">
+                            <option value="mpstme">MPSTME (NMIMS), Vile Parle West</option>
                             <option value="infiniti">Infiniti Mall, Andheri West</option>
-                            <option value="dn_nagar">DN Nagar Metro Station</option>
-                            <option value="juhu">Juhu Beach</option>
+                            <option value="dn_nagar">DN Nagar Metro Station, Andheri West</option>
+                            <option value="midc">MIDC Central Road, Andheri East</option>
+                            <option value="juhu">Juhu Beach, Juhu Tara Road</option>
                         </select>
                     </div>
                     
-                    <div class="flex space-x-3">
+                    <div class="flex space-x-2">
                         <div class="flex-1">
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Vehicle</label>
-                            <select id="vehicle-type" class="w-full p-2.5 border border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm text-sm">
-                                <option value="car">Car</option>
-                                <option value="bike">Two-Wheeler</option>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Vehicle</label>
+                            <select id="vehicle-type" class="w-full p-2 border border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 text-xs font-semibold">
+                                <option value="car">4-Wheeler</option>
+                                <option value="bike">2-Wheeler</option>
                             </select>
                         </div>
                         <div class="flex-1">
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Arrival</label>
-                            <input type="time" value="09:00" class="w-full p-2.5 border border-slate-200 rounded-lg bg-white shadow-sm text-sm">
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Arrive By</label>
+                            <input type="time" id="arrival-time" value="09:00" class="w-full p-2 border border-slate-200 rounded-lg bg-white text-xs font-semibold">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">View & Scenarios</label>
-                        <select id="scenario-selector" class="w-full p-2.5 border-2 border-emerald-500 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 bg-emerald-50/30 font-medium text-emerald-900 shadow-sm">
-                            <option value="nearest">Nearest & Available</option>
-                            <option value="view_all">View All Parking Spaces in Area</option>
-                            <option value="rainy">Rainy Day (Covered spots only)</option>
-                            <option value="budget">Budget-friendly (Sort by price)</option>
-                            <option value="full">Closest Spot is Full</option>
-                            <option value="no_data">Unverified Street Parking</option>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Live Demo Scenario</label>
+                        <select id="scenario-selector" class="w-full p-2 border-2 border-emerald-500 rounded-lg focus:ring-emerald-500 bg-emerald-50/40 font-bold text-emerald-950 text-xs shadow-sm">
+                            <option value="nearest">Smart match</option>
+                            <option value="view_all">View all parking spaces (Regardless of Status)</option>
+                            <option value="college_rush">Peak Hours</option>
+                            <option value="late_arrival">24/7 safe parking spaces</option>
+                            <option value="rainy">Covered parking spaces)</option>
+                            <option value="budget">Budget friendly</option>
+                            <option value="no_data">Unverified parking spaces</option>
                         </select>
                     </div>
                 </div>
             </div>
             
-            <div class="px-5 pb-2 pt-4 bg-slate-100/50 border-t border-slate-200 flex justify-between items-end">
-                <h3 id="results-title" class="text-sm font-bold text-slate-800">Best Matches</h3>
-                <span class="text-[10px] text-slate-400 font-medium" id="results-subtitle">Ranked by algorithm</span>
+            <div class="px-4 py-2.5 bg-slate-100 border-b border-slate-200 flex justify-between items-center">
+                <div>
+                    <h3 id="results-title" class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Smart Matches</h3>
+                    <p class="text-[10px] text-slate-500" id="results-subtitle">Ranked by legality, availability, walk & safety</p>
+                </div>
+                <span id="results-count" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">5</span>
             </div>
             
-            <div id="recommendations-container" class="flex-1 p-4 space-y-4 overflow-y-auto bg-slate-100/50">
+            <div id="recommendations-container" class="flex-1 p-3.5 space-y-3 overflow-y-auto bg-slate-50">
                 <!-- Cards injected via JS -->
             </div>
         </aside>
@@ -88,59 +151,261 @@
         <div class="flex-1 relative bg-slate-200">
             <div id="map" class="h-full w-full z-0"></div>
             
+            <!-- Map Legend (Bottom Left) -->
+            <div class="absolute bottom-5 left-5 bg-white/95 backdrop-blur-sm p-3 rounded-xl shadow-lg z-[1000] border border-slate-200 text-[11px] hidden sm:block">
+                <div class="font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-[10px]">Map Legend</div>
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block border border-white shadow"></span><span>Verified Available</span></div>
+                    <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-purple-600 inline-block border border-white shadow"></span><span>Society / Building Visitor</span></div>
+                    <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-orange-500 inline-block border border-white shadow"></span><span>Campus / Permit Restricted</span></div>
+                    <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-red-500 inline-block border border-white shadow"></span><span>Lot Currently Full</span></div>
+                    <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-slate-500 inline-block border border-white shadow"></span><span>Unverified Status</span></div>
+                </div>
+            </div>
+
             <!-- Enhanced Insights Panel -->
-            <div class="absolute top-5 right-5 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-2xl z-[1000] w-64 border border-slate-100">
-                <div class="flex justify-between items-center mb-3">
-                    <h4 class="text-sm font-bold text-slate-800">Live Insights</h4>
-                    <span class="flex h-2.5 w-2.5 relative">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-2xl z-[1000] w-64 border border-slate-200">
+                <div class="flex justify-between items-center mb-2.5">
+                    <h4 class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Live Zone Telemetry</h4>
+                    <span class="flex items-center space-x-1 text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span>Simulated</span>
                     </span>
                 </div>
-                <div class="grid grid-cols-2 gap-3 text-xs mb-3">
-                    <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                        <span class="block text-slate-400 font-medium mb-0.5">Occupancy</span>
-                        <span id="insight-occupancy" class="font-bold text-xl text-emerald-600">82%</span>
+                <div class="grid grid-cols-2 gap-2.5 text-xs mb-3">
+                    <div class="bg-slate-50 p-2 rounded-lg border border-slate-100">
+                        <span class="block text-slate-400 text-[10px] font-medium">Zone Occupancy</span>
+                        <span id="insight-occupancy" class="font-black text-lg text-emerald-600">82%</span>
                     </div>
-                    <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                        <span class="block text-slate-400 font-medium mb-0.5">Traffic</span>
-                        <span id="insight-congestion" class="font-bold text-xl text-orange-500">Mod</span>
+                    <div class="bg-slate-50 p-2 rounded-lg border border-slate-100">
+                        <span class="block text-slate-400 text-[10px] font-medium">Arrival Traffic</span>
+                        <span id="insight-congestion" class="font-black text-lg text-orange-500">Mod</span>
                     </div>
                 </div>
-                <div class="w-full bg-slate-200 rounded-full h-1.5 mb-1">
-                    <div id="occupancy-bar" class="bg-emerald-500 h-1.5 rounded-full" style="width: 82%"></div>
+                <div class="w-full bg-slate-200 rounded-full h-1.5 mb-2">
+                    <div id="occupancy-bar" class="bg-emerald-500 h-1.5 rounded-full transition-all duration-700" style="width: 82%"></div>
                 </div>
-                <p class="text-[9px] text-slate-400 text-right">Data refreshed just now</p>
+                <div class="flex justify-between text-[10px] text-slate-400">
+                    <span>Source: Gate Boom Counts</span>
+                    <span id="insight-refresh">Just now</span>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- Hold Spot Modal -->
+    <!-- 1. HOLD SPOT & WALLET DEDUCTION MODAL -->
     <div id="hold-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all">
-            <div class="bg-emerald-600 p-4 text-center">
-                <div class="w-12 h-12 bg-white rounded-full mx-auto flex items-center justify-center mb-2 shadow-inner">
-                    <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-slate-100">
+            <div class="bg-gradient-to-r from-slate-900 to-emerald-900 p-4 text-white flex justify-between items-center">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-9 h-9 bg-emerald-500/20 border border-emerald-400/40 rounded-full flex items-center justify-center text-emerald-300 font-bold">
+                        P
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold">Confirm 15-Min Spot Hold</h3>
+                        <p class="text-[11px] text-emerald-300">Guaranteed bay reservation</p>
+                    </div>
                 </div>
-                <h3 class="text-lg font-bold text-white">Spot Held!</h3>
+                <button onclick="closeHoldModal()" class="text-slate-400 hover:text-white text-xl">&times;</button>
             </div>
-            <div class="p-6 text-center">
-                <p class="text-sm text-slate-600 mb-1">Your spot at</p>
-                <p id="modal-lot-name" class="font-bold text-slate-800 text-lg mb-4">Lot Name</p>
-                
-                <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-6">
-                    <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">Leave Home By</p>
-                    <p class="text-3xl font-black text-slate-800">08:45 AM</p>
-                    <p class="text-xs text-orange-600 font-medium mt-2">Hold expires in 15:00</p>
+
+            <div class="p-5">
+                <div class="mb-4">
+                    <p id="modal-lot-name" class="font-extrabold text-slate-800 text-base">Lot Name</p>
+                    <p id="modal-lot-address" class="text-xs text-slate-500">Address</p>
                 </div>
-                
+
+                <!-- Leave Home By Box -->
+                <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5 mb-4 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-emerald-800 font-bold uppercase tracking-wider">Recommended Departure</p>
+                        <p id="modal-leave-time" class="text-2xl font-black text-slate-900">08:42 AM</p>
+                        <p class="text-[11px] text-slate-600 mt-0.5">To arrive before hold expires</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] bg-white px-2.5 py-1 rounded-full border border-emerald-200 font-bold text-emerald-700 shadow-sm">
+                            ⏱️ 15:00 Window
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Wallet Breakdown -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 mb-4 text-xs space-y-2">
+                    <div class="flex justify-between text-slate-600">
+                        <span>Estimated Parking Fee (1st hr):</span>
+                        <span id="modal-parking-fee" class="font-bold text-slate-800">₹40</span>
+                    </div>
+                    <div class="flex justify-between text-slate-600">
+                        <span>ParkPal Hold Convenience Fee:</span>
+                        <span id="modal-hold-fee" class="font-bold text-slate-800">₹10</span>
+                    </div>
+                    <div class="border-t border-slate-200 pt-2 flex justify-between text-sm font-extrabold text-slate-900">
+                        <span>Total Deducted Now:</span>
+                        <span id="modal-total-cost" class="text-emerald-600">₹50</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-1 text-[11px]">
+                        <span class="text-slate-500">Your ParkPal Wallet Balance:</span>
+                        <div>
+                            <span id="modal-wallet-balance" class="font-bold text-slate-800">₹250</span>
+                            <button onclick="closeHoldModal(); openWalletModal();" class="text-emerald-600 hover:underline font-bold ml-1.5">+ Top Up</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modal-insufficient-warning" class="hidden mb-4 p-2.5 bg-red-50 border border-red-200 text-red-700 rounded-lg text-xs font-semibold text-center">
+                    ⚠️ Insufficient wallet balance! Please top up your wallet first.
+                </div>
+
                 <div class="flex space-x-3">
-                    <button onclick="document.getElementById('hold-modal').classList.add('hidden')" class="flex-1 py-2.5 border-2 border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition">Cancel</button>
-                    <a id="modal-nav-btn" href="#" target="_blank" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-lg flex justify-center items-center">Navigate ↗</a>
+                    <button onclick="closeHoldModal()" class="flex-1 py-2.5 border border-slate-300 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition text-xs">
+                        Cancel
+                    </button>
+                    <button id="confirm-hold-btn" onclick="confirmHoldPayment()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-lg text-xs flex justify-center items-center space-x-1">
+                        <span>Pay & Hold Spot</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 2. SMART WALLET MODAL -->
+    <div id="wallet-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100">
+            <!-- Virtual Card Header -->
+            <div class="bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 p-6 text-white relative overflow-hidden">
+                <div class="absolute -right-8 -bottom-8 w-36 h-36 bg-emerald-500/10 rounded-full blur-xl"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold block">ParkPal Smart Wallet</span>
+                        <h3 class="text-xs text-slate-300 font-medium mt-0.5">FASTag & UPI Linked</h3>
+                    </div>
+                    <button onclick="closeWalletModal()" class="text-slate-400 hover:text-white text-xl leading-none">&times;</button>
+                </div>
+                <div class="my-2">
+                    <span class="text-xs text-slate-400 block">Available Balance</span>
+                    <span id="wallet-modal-balance" class="text-4xl font-black text-white tracking-tight">₹250</span>
+                </div>
+                <div class="flex justify-between items-center text-[11px] text-emerald-300 mt-4 pt-3 border-t border-white/10">
+                    <span id="wallet-card-holder">HOLDER: DHEER SHETH</span>
+                    <span class="bg-emerald-500/20 border border-emerald-400/30 px-2 py-0.5 rounded text-[10px] font-mono">AUTO-PAY ACTIVE</span>
+                </div>
+            </div>
+
+            <div class="p-5">
+                <!-- Quick Top-Up -->
+                <div class="mb-5">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Instant Top-Up (Simulated UPI)</label>
+                    <div class="grid grid-cols-3 gap-2 mb-2.5">
+                        <button onclick="addMoney(100)" class="py-2 border-2 border-emerald-500/30 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50 rounded-xl font-bold text-emerald-900 text-xs transition">+ ₹100</button>
+                        <button onclick="addMoney(250)" class="py-2 border-2 border-emerald-500/30 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50 rounded-xl font-bold text-emerald-900 text-xs transition">+ ₹250</button>
+                        <button onclick="addMoney(500)" class="py-2 border-2 border-emerald-500/30 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50 rounded-xl font-bold text-emerald-900 text-xs transition">+ ₹500</button>
+                    </div>
+                    <div class="flex space-x-2">
+                        <input type="number" id="custom-topup" placeholder="Enter custom amount (₹)" class="flex-1 p-2 border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-emerald-500">
+                        <button onclick="addCustomMoney()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-lg text-xs transition">Add Money</button>
+                    </div>
+                </div>
+
+                <!-- Transaction History -->
+                <div>
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Recent Transactions</h4>
+                    <div id="wallet-transactions" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. WELCOME / LOGIN MODAL (SHOWN SECOND, AFTER SPLASH ANIMATION) -->
+    <div id="login-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[3000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200 animate-fade-in">
+            <!-- Hero Brand Banner with Magnified Logo -->
+            <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 text-white text-center relative">
+                <button onclick="closeLoginModal()" title="Continue as Guest" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
+                <div class="h-32 w-32 mx-auto bg-slate-900 rounded-3xl flex items-center justify-center shadow-2xl overflow-hidden border-2 border-emerald-400/70 mb-4">
+                    <img src="logo.png" alt="ParkPal Logo" class="h-full w-full object-cover scale-[1.75]" onerror="this.src='https://via.placeholder.com/128/0f172a/10b981?text=PP'">
+                </div>
+                <h2 class="text-2xl font-black tracking-wider text-white">WELCOME TO PARK PAL</h2>
+                <p class="text-xs text-emerald-300 mt-1">Select a commuter profile to launch the smart parking assistant</p>
+            </div>
+
+            <div class="p-6">
+                <div class="mb-4">
+                    <label class="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2.5">1-Click Demo Login (Choose Persona)</label>
+                    <div class="space-y-2.5">
+                        <!-- Persona 1: Dheer Sheth (From Report) -->
+                        <div onclick="switchUser('dheer')" class="p-3.5 rounded-xl border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40 cursor-pointer transition flex items-center justify-between bg-slate-50/70 group">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-emerald-600 text-white font-black flex items-center justify-center text-sm shadow">DS</div>
+                                <div>
+                                    <p class="text-xs font-extrabold text-slate-800 group-hover:text-emerald-800">Dheer Sheth (Working Professional)</p>
+                                    <p class="text-[11px] text-slate-500">Visitor Account • Public Lots Only</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">Login →</span>
+                        </div>
+
+                        <!-- Persona 2: Ayush Krishnan (NMIMS Student with Permit) -->
+                        <div onclick="switchUser('ayush')" class="p-3.5 rounded-xl border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50/40 cursor-pointer transition flex items-center justify-between bg-slate-50/70 group">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow">AK</div>
+                                <div>
+                                    <p class="text-xs font-extrabold text-slate-800 group-hover:text-blue-800">Ayush Krishnan (MPSTME Student)</p>
+                                    <p class="text-[11px] text-blue-600 font-semibold">✓ Verified NMIMS Campus Permit (A039)</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-bold">Login →</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative flex py-2 items-center">
+                    <div class="flex-grow border-t border-slate-200"></div>
+                    <span class="flex-shrink mx-3 text-slate-400 text-[10px] uppercase font-bold">Or Sign In With Custom Details</span>
+                    <div class="flex-grow border-t border-slate-200"></div>
+                </div>
+
+                <form onsubmit="handleCustomLogin(event)" class="space-y-3 mt-2">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Full Name</label>
+                        <input type="text" id="login-name" required placeholder="e.g. Daivik Bhatt / Kahaan Desai / Adwik Gore" class="w-full p-2.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div class="flex space-x-2">
+                        <div class="flex-1">
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Account / Permit Type</label>
+                            <select id="login-role" class="w-full p-2.5 border border-slate-200 rounded-lg text-xs bg-white font-medium">
+                                <option value="visitor">Public / Visitor</option>
+                                <option value="nmims">NMIMS Student / Faculty (Permit)</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Vehicle Plate</label>
+                            <input type="text" id="login-plate" value="MH 02 AB 1234" class="w-full p-2.5 border border-slate-200 rounded-lg text-xs">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-slate-900 to-emerald-800 hover:from-emerald-700 hover:to-emerald-600 text-white font-extrabold rounded-xl text-xs transition shadow-lg tracking-wide uppercase">
+                        Enter ParkPal Dashboard
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script to handle splash screen fade out and trigger login modal -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    // Show login modal after splash completes
+                    document.getElementById('login-modal').classList.remove('hidden');
+                }, 700);
+            }, 1800); // 1.8 seconds splash animation duration
+        });
+    </script>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="app.js"></script>
